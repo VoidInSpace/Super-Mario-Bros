@@ -7,35 +7,56 @@
 
 PlayState = Class{__includes = BaseState}
 
-function PlayState:init()   
+
+function PlayState:enter(params)--regenerate level and keeps track of player's level and score
+    self.width = params.width
+    self.score =params.score
+ 
     self.camX = 0
     self.camY = 0
-    self.level = LevelMaker.generate(100, 10)
+    self.level = LevelMaker.generate(self.width, 10)
     self.tileMap = self.level.tileMap
-    self.background = math.random(3)
+    self.background = math.random (3)
     self.backgroundX = 0
-
+ 
     self.gravityOn = true
     self.gravityAmount = 6
 
+ 
     self.player = Player({
-        x = 0, y = 0,
-        width = 16, height = 20,
-        texture = 'green-alien',
-        stateMachine = StateMachine {
-            ['idle'] = function() return PlayerIdleState(self.player) end,
-            ['walking'] = function() return PlayerWalkingState(self.player) end,
-            ['jump'] = function() return PlayerJumpState(self.player, self.gravityAmount) end,
-            ['falling'] = function() return PlayerFallingState(self.player, self.gravityAmount) end
-        },
-        map = self.tileMap,
-        level = self.level
-    })
+       x = 0, y = 0,
+       width = 16, height = 20,
+       texture = 'green-alien',
+       stateMachine = StateMachine {
+         ['idle'] = function() return PlayerIdleState(self.player) end,
+         ['walking'] = function() return PlayerWalkingState(self.player) end,
+         ['jump'] = function() return PlayerJumpState(self.player, self.gravityAmount) end,
+         ['falling'] = function() return PlayerFallingState(self.player, self.gravityAmount) end
+       },
+      
+      map = self.tileMap,
+      level = self.level,
+      
+     })
+     self.player.score = self.score
+     self:spawnEnemies()
+ 
+     self.player:changeState('falling')
+ end
+ 
+ function PlayState:init()   
+     self.camX = 0
+     self.camY = 0
+     self.level = LevelMaker.generate(100, 10)
+     self.tileMap = self.level.tileMap
+     self.background = math.random(3)
+     self.backgroundX = 0
+ 
+     self.gravityOn = true
+     self.gravityAmount = 6
+ end   
 
-    self:spawnEnemies()
 
-    self.player:changeState('falling')
-end
 
 function PlayState:update(dt)
     Timer.update(dt)

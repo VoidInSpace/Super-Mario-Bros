@@ -194,7 +194,7 @@ function LevelMaker.generate(width, height)
 
                 local lock = GameObject {
                     texture = 'locks-keys',
-                    x = 1584,
+                    x = (width - 2)* TILE_SIZE,--change the x-position of block,
                     y = (blockHeight - 1) * TILE_SIZE,
                     width = 16,
                     height = 16,
@@ -208,7 +208,7 @@ function LevelMaker.generate(width, height)
                             if CollectedKey then
                                 gSounds['pickup']:play()
                                 obj.hit = true
-                                    
+                                
                                 -- to spawn the post
                                 local post = GameObject {
                                     texture = 'posts',
@@ -223,6 +223,10 @@ function LevelMaker.generate(width, height)
 
                                     onConsume = function(player, object)
                                         gSounds['pickup']:play()
+
+                                        gStateMachine:change('play',
+                                        
+                                        {width = width + 50, score = player.score} )--update score
                                     end
                                 }
 
